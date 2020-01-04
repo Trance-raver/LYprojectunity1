@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Vuforia;
 using OpenCvSharp;
+using OpenCvSharp.Util;
 
 public class image2 : MonoBehaviour
 {
@@ -13,9 +14,10 @@ public class image2 : MonoBehaviour
     // public RawImage sourceRawImage;
     //  public RawImage targetRawImage;
 
-    private bool image_exist;
+    public bool image_exist;
     private bool mFormatRegistered = false;
     public Texture2D graph;
+    public float x1, y1, l;
 
     // Start is called before the first frame update
     private void OnVuforiaStarted()
@@ -45,6 +47,9 @@ public class image2 : MonoBehaviour
                     Vuforia.Image image = CameraDevice.Instance.GetCameraImage(mPixelFormat);
                     image.CopyToTexture(graph);
                     Debug.Log("found image" + image.Pixels.Length);
+                    x1 = image.Width;
+                    y1 = image.Height;
+                    l = image.Pixels.Length;
                     //  Debug.Log("" + graph.GetPixels());
                     var bytes = graph.EncodeToPNG();
                     Debug.Log("" + bytes);
@@ -116,11 +121,6 @@ public class image2 : MonoBehaviour
     void Start()
     {
         graph = new Texture2D(256, 256);
-
-
-        Mat mainMat = new Mat(graph.height, graph.width, Cv2.CV_8UC3);
-        Mat grayMat = new Mat();
-
         mPixelFormat = PIXEL_FORMAT.GRAYSCALE;
         VuforiaARController.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
         VuforiaARController.Instance.RegisterTrackablesUpdatedCallback(OnTrackablesUpdated);
@@ -128,18 +128,11 @@ public class image2 : MonoBehaviour
 
     }
 
-    void imageEdge()
-    {
 
-    }
 
     // Update is called once per frame
     void Update()
     {
-        if (image_exist)
-        {
-            imageEdge();
-        }
 
     }
 }
